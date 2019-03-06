@@ -100,22 +100,23 @@ async function search(contract, options) {
   )
 }
 // TODO: check options.params and options.headers in axoos wrapper.
-async function getChains(chainIds, options) {
+async function getChains(user, chainIds, options) {
   const url = getBlocUrl(options)
-  const endpoint = constructEndpoint(endpoints.getChain, {}. options)
+  const endpoint = constructEndpoint(endpoints.getChain, {}, options)
   return ax.get(
     url,
     endpoint
   )
 }
 
-async function createChain(body, options) {
+async function createChain(user, body, options) {
   const url = getBlocUrl(options)
   const endpoint = constructEndpoint(endpoints.createChain, {}, options)
-  await ax.post(
+  return await ax.post(
     url,
     endpoint,
-    body
+    body,
+    getHeaders(user, options)
   )
 }
 

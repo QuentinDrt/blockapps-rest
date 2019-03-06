@@ -214,3 +214,53 @@ describe('search', function () {
   })
 
 })
+
+describe('chain', function () {
+  this.timeout(config.timeout)
+  let admin;
+  let contract;
+  let tokenUser;
+  const options = { config }
+
+  before(async () => {
+    const uid = util.uid()
+
+    assert.isDefined(process.env.USER_TOKEN)
+    const address = await rest.createOrGetKey({ token: process.env.USER_TOKEN }, options);
+    assert.isOk(util.isAddress(address))
+
+    admin = await factory.createAdmin(uid, options)
+    tokenUser = { token: process.env.USER_TOKEN }
+  })
+
+  it('create chain', async () => {
+    const chain = factory.createChainArgs([admin.address]);
+    const contract = {
+      src: 'contract Governance { }',
+      args: {},
+      name: 'Governance'
+    }
+    const result = await rest.createChain(tokenUser, chain, contract, { config });
+    assert.isOk(util.isHash(result), 'hash')
+  })
+
+  it('Get Chains', async () => {
+    // Create chain
+    let chainId;
+    {
+      const chain = factory.createChainArgs([admin.address]);
+      const contract = {
+        src: 'contract Governance { }',
+        args: {},
+        name: 'Governance'
+      }
+      chainId = await rest.createChain(tokenUser, chain, contract, { config });
+      assert.isOk(util.isHash(chainId), 'hash')
+    }
+
+    // check chain data
+    const result = await rest.getChains(tokenUser, [chainId], { config });
+    console.log("------------------", result)
+  })
+
+})

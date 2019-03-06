@@ -316,13 +316,15 @@ async function getChain(chainId, options) {
   return results && results.length > 0 ? results[0] : {}
 }
 
-async function getChains(chainIds, options) {
-  const results = await api.getChains(chainIds, options)
+async function getChains(user, chainIds, options) {
+  const results = await api.getChains(user, chainIds, options)
   return results 
 }
 
-async function createChain(chain, contract, options) {
-  const result = await api.createChain({
+async function createChain(user, chain, contract, options) {
+  const result = await api.createChain(
+    user,
+    {
     ...chain,
     src: contract.src,
     args: contract.args,
